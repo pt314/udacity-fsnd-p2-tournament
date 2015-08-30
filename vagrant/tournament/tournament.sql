@@ -6,4 +6,22 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- For now, recreate the database every time
+DROP DATABASE tournament;
+CREATE DATABASE tournament;
+-- Connect to the database
+\c tournament
 
+-- Just a test for now
+CREATE TABLE players (
+	name	text
+);
+
+-- Some sample data
+INSERT INTO players VALUES('Amy');
+INSERT INTO players VALUES('Ender');
+
+SELECT * FROM players;
+
+-- Disconnect from the database
+\c vagrant
