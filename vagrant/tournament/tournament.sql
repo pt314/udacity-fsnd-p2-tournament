@@ -27,6 +27,20 @@ CREATE TABLE matches (
 	loser_id	integer REFERENCES players(id)
 );
 
+CREATE VIEW standings AS
+SELECT p.id, p.name,
+	(
+		SELECT COUNT(*) FROM matches
+		WHERE winner_id = p.id
+		GROUP BY winner_id
+	) wins,
+	count(*) matches
+FROM players p
+JOIN matches m ON p.id IN (m.winner_id, m.loser_id)
+GROUP BY p.id
+ORDER BY wins DESC;
+
+
 -- Some sample data
 INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
