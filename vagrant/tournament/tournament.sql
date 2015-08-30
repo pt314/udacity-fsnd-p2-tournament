@@ -14,12 +14,13 @@ CREATE DATABASE tournament;
 
 -- Just a test for now
 CREATE TABLE players (
+	id		serial	PRIMARY KEY,
 	name	text
 );
 
 -- Some sample data
-INSERT INTO players VALUES('Amy');
-INSERT INTO players VALUES('Ender');
+INSERT INTO players(name) VALUES('Amy');
+INSERT INTO players(name) VALUES('Ender');
 
 SELECT * FROM players;
 
