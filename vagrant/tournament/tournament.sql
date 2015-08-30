@@ -6,16 +6,25 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- Disconnect from the database
+\c vagrant
+
 -- For now, recreate the database every time
 DROP DATABASE tournament;
 CREATE DATABASE tournament;
+
 -- Connect to the database
 \c tournament
 
--- Just a test for now
 CREATE TABLE players (
 	id		serial	PRIMARY KEY,
 	name	text
+);
+
+CREATE TABLE matches (
+	id			serial	PRIMARY KEY,
+	winner_id	integer,
+	loser_id	integer
 );
 
 -- Some sample data
@@ -23,6 +32,4 @@ INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
 
 SELECT * FROM players;
-
--- Disconnect from the database
-\c vagrant
+SELECT * FROM matches;
