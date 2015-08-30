@@ -23,13 +23,18 @@ CREATE TABLE players (
 
 CREATE TABLE matches (
 	id			serial	PRIMARY KEY,
-	winner_id	integer,
-	loser_id	integer
+	winner_id	integer REFERENCES players(id),
+	loser_id	integer REFERENCES players(id)
 );
 
 -- Some sample data
 INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
+
+-- Test with ivalid players
+-- TODO: create tests in python code
+INSERT INTO matches(winner_id, loser_id) VALUES(3, 1);
+INSERT INTO matches(winner_id, loser_id) VALUES(1, 3);
 
 SELECT * FROM players;
 SELECT * FROM matches;
