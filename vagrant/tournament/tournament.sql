@@ -24,7 +24,8 @@ CREATE TABLE players (
 CREATE TABLE matches (
 	id			serial	PRIMARY KEY,
 	winner_id	integer REFERENCES players(id),
-	loser_id	integer REFERENCES players(id)
+	loser_id	integer REFERENCES players(id),
+	CHECK		(winner_id != loser_id)
 );
 
 CREATE VIEW standings AS
@@ -45,8 +46,9 @@ ORDER BY wins DESC;
 INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
 
--- Test with ivalid players
+-- Test with invalid players
 -- TODO: create tests in python code
+INSERT INTO matches(winner_id, loser_id) VALUES(1, 1);
 INSERT INTO matches(winner_id, loser_id) VALUES(3, 1);
 INSERT INTO matches(winner_id, loser_id) VALUES(1, 3);
 
