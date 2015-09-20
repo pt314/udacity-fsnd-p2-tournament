@@ -33,18 +33,18 @@ SELECT p.id, p.name,
 	(
 		SELECT COUNT(*) FROM matches
 		WHERE winner_id = p.id
-		GROUP BY winner_id
 	) wins,
-	count(*) matches
+	count(m.*) matches
 FROM players p
-JOIN matches m ON p.id IN (m.winner_id, m.loser_id)
+LEFT JOIN matches m ON p.id IN (m.winner_id, m.loser_id)
 GROUP BY p.id
-ORDER BY wins DESC;
+ORDER BY wins DESC, p.name ASC;
 
 
 -- Some sample data
 INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
+--INSERT INTO players(name) VALUES('Kent');
 
 -- Test with invalid players
 -- TODO: create tests in python code
