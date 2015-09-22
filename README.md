@@ -14,3 +14,12 @@ Usage:
 - Connect to the VM: `vagrant ssh`
 - Start psql CLI: `psql`
 - Build the database: `\i tournament.sql`
+
+Tables:
+
+- players
+- matches
+
+Views:
+
+- standings
