@@ -23,3 +23,8 @@ Tables:
 Views:
 
 - standings
+
+TODO
+----
+
+- Prevent rematches between players.

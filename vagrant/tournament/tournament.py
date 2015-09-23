@@ -118,3 +118,35 @@ def swissPairings():
         pairings.append(pair)
     
     return pairings
+
+
+def playerMatches():
+    """Returns a map with all the players that have been matched with each player.
+
+    Returns:
+      A map, with one entry for each player
+        key: player's unique id
+        value: a list ids of all the players that have played with the player
+    """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM matches")
+    results = c.fetchall()
+    conn.close()
+
+    matches = {}
+    for match in results:
+        id1 = match[1]
+        id2 = match[2]
+
+        # init lists if necessary
+        if not id1 in matches:
+            matches[id1] = []
+        if not id2 in matches:
+            matches[id2] = []
+            
+        # add players to each other's lists
+        matches[id1].append(id2)
+        matches[id2].append(id1)
+
+    return matches
