@@ -76,14 +76,22 @@ def playerStandings():
     conn.close()
     return results
 
-
-def reportMatch(winner, loser):
+def reportMatch(player1_result, player2_result):
     """Records the outcome of a single match between two players.
 
+    There are two valid cases:
+      1) One player wins and the other loses.
+      2) Both player draw.
+
     Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
+      player1_result:  (player id, ['win', 'lose', 'draw'])
+      player2_result:  (player id, ['win', 'lose', 'draw'])
     """
+    # Check for right combination of results
+    results = (player1_result[1], player2_result[1])
+    if results not in [('win', 'lose'), ('lose', 'win'), ('draw', 'draw')]:
+        raise ValueError("Invalid results")
+
     conn = connect()
     c = conn.cursor()
 
@@ -92,17 +100,21 @@ def reportMatch(winner, loser):
     match_id = c.fetchone()[0]
 
     # Add players to match
-    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)", (match_id, winner))
-    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)", (match_id, loser))
+    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)",
+        (match_id, player1_result[0]))
+    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)",
+        (match_id, player2_result[0]))
 
     # Record match results
-    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)", (match_id, winner, "win"))
-    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)", (match_id, loser, "lose"))
+    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)",
+        (match_id, player1_result[0], player1_result[1]))
+    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)",
+        (match_id, player2_result[0], player2_result[1]))
 
     conn.commit()
     conn.close()
 
- 
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   

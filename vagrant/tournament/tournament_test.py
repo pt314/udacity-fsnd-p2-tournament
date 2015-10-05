@@ -69,10 +69,10 @@ def testStandingsBeforeMatches():
         raise ValueError("Only registered players should appear in standings.")
     if len(standings[0]) != 4:
         raise ValueError("Each playerStandings row should have four columns.")
-    [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
-    if matches1 != 0 or matches2 != 0 or wins1 != 0 or wins2 != 0:
+    [(id1, name1, score1, matches1), (id2, name2, score2, matches2)] = standings
+    if matches1 != 0 or matches2 != 0 or score1 != 0.0 or score2 != 0.0:
         raise ValueError(
-            "Newly registered players should have no matches or wins.")
+            "Newly registered players should have no matches and should have a zero score.")
     if set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]):
         raise ValueError("Registered players' names should appear in standings, "
                          "even if they have no matches played.")
@@ -88,16 +88,18 @@ def testReportMatches():
     registerPlayer("Diane Grant")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch((id1, 'win'), (id2, 'lose'))
+    reportMatch((id3, 'draw'), (id4, 'draw'))
     standings = playerStandings()
-    for (i, n, w, m) in standings:
+    for (i, n, s, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
-        if i in (id1, id3) and w != 1:
-            raise ValueError("Each match winner should have one win recorded.")
-        elif i in (id2, id4) and w != 0:
-            raise ValueError("Each match loser should have zero wins recorded.")
+        if i in (id1,) and s != 1.0:
+            raise ValueError("Each match winner should have a score of 1.0.")
+        elif i in (id2,) and s != 0.0:
+            raise ValueError("Each match loser should have a score of 0.0.")
+        elif i in (id3, id4) and s != 0.5:
+            raise ValueError("Each player with a draw should have a score of 0.5.")
     print "7. After a match, players have updated standings."
 
 
@@ -110,8 +112,8 @@ def testPairings():
     registerPlayer("Pinkie Pie")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch((id1, 'win'), (id2, 'lose'))
+    reportMatch((id3, 'win'), (id4, 'lose'))
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(

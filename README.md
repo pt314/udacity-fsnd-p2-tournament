@@ -22,13 +22,16 @@ Tournament rules to be used in this project:
     and pairs it with the next player with highest score that has never been an opponent.
     (Usually there should be such a player, since the number of rounds is small.)
 
+Features
+--------
+
+- Draws are possible.
 
 TODO
 ----
 
 - Prevent rematches between players.
 - Allow an odd number of players, giving a bye to a player on each round, and avoiding multiple byes.
-- Draws are possible.
 - When two players have the same number of wins, they are according to the total number of wins by players they have played against.
 - Support multiple tournaments.
 
