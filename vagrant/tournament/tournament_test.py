@@ -9,7 +9,7 @@ def testDeleteMatches():
     print "1. Old matches can be deleted."
 
 
-def testDelete():
+def testDeletePlayers():
     deleteMatches()
     deletePlayers()
     print "2. Player records can be deleted."
@@ -127,7 +127,7 @@ def testPairings():
 
 if __name__ == '__main__':
     testDeleteMatches()
-    testDelete()
+    testDeletePlayers()
     testCount()
     testRegister()
     testRegisterCountDelete()

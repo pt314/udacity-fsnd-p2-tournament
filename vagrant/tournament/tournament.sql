@@ -22,35 +22,43 @@ CREATE TABLE players (
 );
 
 CREATE TABLE matches (
-	id			serial	PRIMARY KEY,
-	winner_id	integer REFERENCES players(id),
-	loser_id	integer REFERENCES players(id),
-	CHECK		(winner_id != loser_id)
+	id			serial	PRIMARY KEY
+);
+
+-- TODO: Add constraint: A match can only hav two players.
+CREATE TABLE match_players (
+	match_id	integer	REFERENCES matches(id),
+	player_id	integer REFERENCES players(id),
+	PRIMARY KEY	(match_id, player_id)
+);
+
+-- Includes match results (wins, losses, draws).
+CREATE TABLE match_results (
+	match_id	integer	REFERENCES matches(id),
+	player_id	integer	REFERENCES players(id),
+	result		varchar(4),
+	FOREIGN KEY	(match_id, player_id) REFERENCES match_players(match_id, player_id),
+	CHECK		(result IN ('win', 'lose'))
 );
 
 CREATE VIEW standings AS
 SELECT p.id, p.name,
 	(
-		SELECT COUNT(*) FROM matches
-		WHERE winner_id = p.id
+		SELECT COUNT(*) FROM match_results
+		WHERE player_id = p.id
+		AND result = 'win'
 	) wins,
-	count(m.*) matches
+	count(r.*) matches
 FROM players p
-LEFT JOIN matches m ON p.id IN (m.winner_id, m.loser_id)
+LEFT JOIN match_results r ON p.id = r.player_id
 GROUP BY p.id
-ORDER BY wins DESC, p.name ASC;
+ORDER BY wins DESC, p.name ASC, p.id ASC;
 
 
 -- Some sample data
 INSERT INTO players(name) VALUES('Amy');
 INSERT INTO players(name) VALUES('Ender');
---INSERT INTO players(name) VALUES('Kent');
-
--- Test with invalid players
--- TODO: create tests in python code
-INSERT INTO matches(winner_id, loser_id) VALUES(1, 1);
-INSERT INTO matches(winner_id, loser_id) VALUES(3, 1);
-INSERT INTO matches(winner_id, loser_id) VALUES(1, 3);
+INSERT INTO players(name) VALUES('Kent');
 
 SELECT * FROM players;
 SELECT * FROM matches;

@@ -10,11 +10,12 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
 
-
 def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     c = conn.cursor()
+    c.execute("DELETE FROM match_results")
+    c.execute("DELETE FROM match_players")
     c.execute("DELETE FROM matches")
     conn.commit()
     conn.close()
@@ -85,7 +86,19 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO matches(winner_id, loser_id) VALUES(%s, %s)", (winner, loser))
+
+    # Create match
+    c.execute("INSERT INTO matches DEFAULT VALUES RETURNING id")
+    match_id = c.fetchone()[0]
+
+    # Add players to match
+    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)", (match_id, winner))
+    c.execute("INSERT INTO match_players (match_id, player_id) VALUES (%s, %s)", (match_id, loser))
+
+    # Record match results
+    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)", (match_id, winner, "win"))
+    c.execute("INSERT INTO match_results (match_id, player_id, result) VALUES (%s, %s, %s)", (match_id, loser, "lose"))
+
     conn.commit()
     conn.close()
 
@@ -144,7 +157,7 @@ def playerMatches():
             matches[id1] = []
         if not id2 in matches:
             matches[id2] = []
-            
+
         # add players to each other's lists
         matches[id1].append(id2)
         matches[id2].append(id1)
