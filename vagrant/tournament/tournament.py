@@ -31,12 +31,13 @@ def readScoresConfig():
 
 
 def deleteMatches():
-    """Remove all the match records from the database."""
+    """Remove all the match and bye records from the database."""
     conn = connect()
     c = conn.cursor()
     c.execute("DELETE FROM match_results")
     c.execute("DELETE FROM match_players")
     c.execute("DELETE FROM matches")
+    c.execute("DELETE FROM byes")
     conn.commit()
     conn.close()
 
@@ -100,6 +101,20 @@ def playerStandings():
     results = c.fetchall()
     conn.close()
     return results
+
+
+def reportBye(player_id):
+    """Records a bye for a player.
+  
+    Args:
+      player_id: the player's id.
+    """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("INSERT INTO byes(player_id) VALUES(%s)", (player_id,))
+    conn.commit()
+    conn.close()
+
 
 def reportMatch(player1_result, player2_result):
     """Records the outcome of a single match between two players.

@@ -107,6 +107,26 @@ def testReportMatches():
     print "7. After a match, players have updated standings."
 
 
+def testReportBye():
+    deleteMatches()
+    deletePlayers()
+    id1 = registerPlayer("A")
+    id2 = registerPlayer("B")
+    id3 = registerPlayer("C")
+    reportBye(id1)
+    result_scores = readScoresConfig()
+    standings = playerStandings()
+    for (i, n, s, m) in standings:
+        if m != 0:
+            raise ValueError("Each player should have zero matches recorded.")
+        if i in (id1,) and s != result_scores['bye']:
+            raise ValueError("Each player with a bye should have a score of "
+                + str(result_scores['bye']) + ".")
+        elif i in (id2, id3) and s != 0.0:
+            raise ValueError("Each player without a bye should have a score of 0.0.")
+    print "8. After a bye, players have correct scores."
+
+
 def testPairings():
     deleteMatches()
     deletePlayers()
@@ -128,7 +148,7 @@ def testPairings():
     if correct_pairs != actual_pairs:
         raise ValueError(
             "After one match, players with one win should be paired.")
-    print "8. After one match, players with one win are paired."
+    print "9. After one match, players with one win are paired."
 
 
 if __name__ == '__main__':
@@ -139,6 +159,7 @@ if __name__ == '__main__':
     testRegisterCountDelete()
     testStandingsBeforeMatches()
     testReportMatches()
+    testReportBye()
     testPairings()
     print "Success!  All tests pass!"
 
