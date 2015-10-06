@@ -37,6 +37,44 @@ Alternatively, you may install a [Python](http://www.python.org/) environment wi
 Usage
 -----
 
+To use the project, first import tournament module and use the functions available to generate pairings for each round, report match results, and get player standings.
+
+Here's an example:
+
+```
+from tournament import *
+
+# Clear data before a new tournament
+deleteMatches()
+deletePlayers()
+
+# Register players
+registerPlayer("Peter Pan")
+registerPlayer("James Bond")
+registerPlayer("Snow White")
+registerPlayer("Chess Master")
+registerPlayer("Cookie Monster")
+
+# Generate pairings for first round (a bye is given automatically)
+pairings = swissPairings()
+print("Pairings:")
+for pair in pairings:
+    print(pair)
+
+# Report results for first round
+reportMatch((pairings[0][0], 'win'), (pairings[0][2], 'lose'))
+reportMatch((pairings[1][0], 'draw'), (pairings[1][2], 'draw'))
+
+# See current standings
+standings = playerStandings()
+print("Standings:")
+for player in standings:
+    print(player)
+
+# Generate pairings for second round...
+# (Repeat for the desired number of rounds, usually log base 2 of n times)
+pairings = swissPairings()
+```
 
 
 Installation
@@ -45,29 +83,24 @@ Installation
 After installing VirtualBox and Vagrant, do the following on the terminal:
 
 1) Clone the project (if you don't have git, you may download the project from github).
-
 ```
 $ git clone git@github.com:pt314/udacity-fsnd-p2-tournament.git
 ```
 
 2) Start the virtual machine (the first time will take a while to download and setup things).
-
 ```
 $ cd udacity-fsnd-p2-tournament/vagrant
 $ vagrant up
 ```
 
 3) Connect to the virtual machine.
-
 ```
 $ vagrant ssh
 $ cd /vagrant/tournament
 ```
-
-  (Use ```vagrant halt``` to turn it off.)
+(Use ```vagrant halt``` to turn it off.)
 
 4) Install the database.
-
 ```
 $ psql
 vagrant=> \i tournament.sql
@@ -76,3 +109,8 @@ vagrant=> \i tournament.sql
 5) Update scores configuration, by updating the scores in the ```scores_config```.
 
 This is optional. The default configuration, which is used by chess and other games, gives 1 point for a win or bye, 0.5 for a draw, and 0 for a loss. Other games use different values.
+
+6) Run the tests.
+```
+$ python tournament_test.py
+```
