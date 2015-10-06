@@ -151,6 +151,53 @@ def testPairings():
     print "9. After one match, players with one win are paired."
 
 
+def testPairingsWithByes():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("A")
+    registerPlayer("B")
+    registerPlayer("C")
+
+    # Initial standings
+    standings = playerStandings()
+    [id1, id2, id3] = [row[0] for row in standings]
+
+    # First round
+    pairings = swissPairings()
+    if len(pairings) != 1:
+        raise ValueError(
+            "For three players, swissPairings should return one pair.")
+    byes = playerByes()
+    if len(byes) != 1 and byes != [id3]:
+        raise ValueError(
+            "Only the lowest player without a bye should receive a bye.")
+    reportMatch((id1, 'win'), (id2, 'lose'))
+
+    # Second round
+    pairings = swissPairings()
+    if len(pairings) != 1:
+        raise ValueError(
+            "For three players, swissPairings should return one pair.")
+    byes = playerByes()
+    if len(byes) != 2 and set(byes) != set([id3, id2]):
+        raise ValueError(
+            "Only the lowest player without a bye should receive a bye.")
+    reportMatch((id1, 'win'), (id3, 'lose'))
+
+    # Third round
+    pairings = swissPairings()
+    if len(pairings) != 1:
+        raise ValueError(
+            "For three players, swissPairings should return one pair.")
+    byes = playerByes()
+    if len(byes) != 2 and set(byes) != set([id3, id2, id1]):
+        raise ValueError(
+            "Only the lowest player without a bye should receive a bye.")
+    reportMatch((id1, 'win'), (id3, 'lose'))
+
+    print "10. For several matches, byes are assigned correctly."
+
+
 if __name__ == '__main__':
     testDeleteMatches()
     testDeletePlayers()
@@ -161,6 +208,5 @@ if __name__ == '__main__':
     testReportMatches()
     testReportBye()
     testPairings()
+    testPairingsWithByes()
     print "Success!  All tests pass!"
-
-

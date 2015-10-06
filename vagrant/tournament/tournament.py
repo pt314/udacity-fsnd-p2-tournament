@@ -116,6 +116,17 @@ def reportBye(player_id):
     conn.close()
 
 
+def playerByes():
+    """Returns the list of ids for players with byes."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM byes")
+    results = c.fetchall()
+    bye_player_ids = set([x[0] for x in results])
+    conn.close()
+    return bye_player_ids
+
+
 def reportMatch(player1_result, player2_result):
     """Records the outcome of a single match between two players.
 
@@ -155,6 +166,35 @@ def reportMatch(player1_result, player2_result):
     conn.close()
 
 
+def swissPairingsBye(standings):
+    """Repots a bye if the number of players is odd, before pairing the other players.
+  
+    A bye is given to a player with lowest score and no bye so far.
+  
+    Args:
+      standings: standings in the format returned by playerStandings()
+
+    Returns:
+      Updated standings with the bye player removed.
+    """
+    # If number of payers is even, no bye is given
+    if len(standings) % 2 == 0:
+        return standings
+
+    # Get previous byes
+    bye_player_ids = playerByes()
+
+    # For the next bye, select a player with lowest score and no bye
+    for player in reversed(standings):
+        if player[0] not in bye_player_ids:
+            standings.remove(player)
+            reportBye(player[0])
+            break
+
+    # Return the standings for the remaining players to be matched
+    return standings
+
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   
@@ -162,6 +202,9 @@ def swissPairings():
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
+
+    If the are a odd number of players registered, a bye is given to one of the
+    players, and the remaining players are paired as if the number was even.
   
     Returns:
       A list of tuples, each of which contains (id1, name1, id2, name2)
@@ -174,6 +217,10 @@ def swissPairings():
 
     standings = playerStandings()
 
+    # Report bye if necessary
+    standings = swissPairingsBye(standings)
+    
+    # Match remaining players
     for i in range(0, len(standings), 2):
         player1_id = standings[i][0]
         player1_name = standings[i][1]

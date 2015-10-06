@@ -34,7 +34,6 @@ INSERT INTO scores_config (result, score) VALUES('draw', 0.5);
 INSERT INTO scores_config (result, score) VALUES('bye', 1);
 
 
-
 CREATE TABLE players (
 	id		serial	PRIMARY KEY,
 	name	text
@@ -44,7 +43,9 @@ CREATE TABLE matches (
 	id			serial	PRIMARY KEY
 );
 
--- TODO: Add constraint: A match can only hav two players.
+-- Players for each match.
+-- More information could be added here later. For example,
+-- the color of each player in the case of chess.
 CREATE TABLE match_players (
 	match_id	integer	REFERENCES matches(id),
 	player_id	integer REFERENCES players(id),
@@ -61,11 +62,15 @@ CREATE TABLE match_results (
 	CHECK		(result IN ('win', 'lose', 'draw'))
 );
 
+-- Player byes. A player may receive at most one bye.
 CREATE TABLE byes (
 	player_id	integer	PRIMARY KEY	REFERENCES players(id)
 );
 
+
 -- List of player results, including a row for each win, loss, draw, and bye.
+-- Each row includes the player id and name, the result and score, and the
+-- match id for match results (null for byes).
 CREATE VIEW player_results AS
 SELECT p.id, p.name, m.result AS result, s.score, m.match_id AS match_id
 	FROM players p
@@ -87,12 +92,3 @@ FROM players p
 LEFT JOIN player_results r ON p.id = r.id
 GROUP BY p.id
 ORDER BY score DESC, p.name ASC, p.id ASC;
-
-
--- Some sample data
-INSERT INTO players(name) VALUES('Amy');
-INSERT INTO players(name) VALUES('Ender');
-INSERT INTO players(name) VALUES('Kent');
-
-SELECT * FROM players;
-SELECT * FROM matches;
