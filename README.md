@@ -29,16 +29,50 @@ Things that would be nice
 Requirements
 ------------
 
+This project includes a Vagrant environment including everything necessary. To use it, install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads), and follow the project installation steps bellow.
+
+Alternatively, you may install a [Python](http://www.python.org/) environment with psycopg2, and [PostgreSQL](http://www.postgresql.org/). But note that this has not been tested, and you may have to follow additional steps or make changes to some of the files.
+
 
 Usage
 -----
 
 
+
 Installation
 ------------
 
-- Go to the vagrant/tournament directory
-- Start vagrant VM: `vagrant up`
-- Connect to the VM: `vagrant ssh`
-- Start psql CLI: `psql`
-- Build the database: `\i tournament.sql`
+After installing VirtualBox and Vagrant, do the following on the terminal:
+
+1) Clone the project (if you don't have git, you may download the project from github).
+
+```
+$ git clone git@github.com:pt314/udacity-fsnd-p2-tournament.git
+```
+
+2) Start the virtual machine (the first time will take a while to download and setup things).
+
+```
+$ cd udacity-fsnd-p2-tournament/vagrant
+$ vagrant up
+```
+
+3) Connect to the virtual machine.
+
+```
+$ vagrant ssh
+$ cd /vagrant/tournament
+```
+
+  (Use ```vagrant halt``` to turn it off.)
+
+4) Install the database.
+
+```
+$ psql
+vagrant=> \i tournament.sql
+```
+
+5) Update scores configuration, by updating the scores in the ```scores_config```.
+
+This is optional. The default configuration, which is used by chess and other games, gives 1 point for a win or bye, 0.5 for a draw, and 0 for a loss. Other games use different values.
