@@ -1,57 +1,44 @@
-rdb-fullstack
-=============
-
-Common code for the Relational Databases and Full Stack Fundamentals courses
-
-
 Project 2: Tournament Results
------------------------------
+=============================
 
-Swiss system tournament.
+This project uses a simple database to keep track of players and matches in a game tournament. The tournament uses the
+[Swiss system](https://en.wikipedia.org/wiki/Swiss-system_tournament) for pairing the players in each round.
 
-There are many Swiss system variations. For more information, refer to:
-https://en.wikipedia.org/wiki/Swiss-system_tournament
+There are many variations of the system, but basically: players are matched with other players with similar scores, no players are eliminated, and the number of rounds required to decide the winner is small (usually log base 2 of n or less).
 
-Tournament rules to be used in this project:
+The pairing algorithm used in this project is simple: after giving a skipping a player if the number of players is odd, adjacent players are matched in the list of players sorted by score.
 
-- Given n players, the number of rounds of a tournament is log base 2 of n.
-- A win is worth 1 point, a loss is worth 0 points, and a draw is worth 0.5 points.
-- On the first round, players are paired randomly.
-- On subsequent rounds, players are paired with other players with similar scores, avoiding rematches.
-  - At each step, the pairing algorithm picks an unmatched player with highest score,
-    and pairs it with the next player with highest score that has never been an opponent.
-    (Usually there should be such a player, since the number of rounds is small.)
 
-Features
---------
+Extra features
+--------------
 
-- Draws are possible.
+- Support for draws (tied games). For each player, the result of a match is either win, lose, or draw.
+- Support for an odd number of players. A player with lowest score gets a bye (skipped round) on each round, and each player can receive at most one bye.
+- The scores players get for wins, losses, draws, and byes can be configured.
 
-TODO
-----
+
+Things that would be nice
+-------------------------
 
 - Prevent rematches between players.
-- Allow an odd number of players, giving a bye to a player on each round, and avoiding multiple byes.
-- When two players have the same number of wins, they are according to the total number of wins by players they have played against.
-- Support multiple tournaments.
+- When two players have the same number of wins, use OMW (Opponent Match Wins) to break ties.
+- Add randomnes to pairing algorithm. For example, if several players have the same score, choose a random pair to match.
+- Support multiple tournaments. Currently, the database is for one tournament, and tables must be cleared before a new tournament.
 
 
-Technical details
------------------
+Requirements
+------------
 
-Usage:
+
+Usage
+-----
+
+
+Installation
+------------
 
 - Go to the vagrant/tournament directory
 - Start vagrant VM: `vagrant up`
 - Connect to the VM: `vagrant ssh`
 - Start psql CLI: `psql`
 - Build the database: `\i tournament.sql`
-
-Tables:
-
-- players
-- matches
-
-Views:
-
-- standings
