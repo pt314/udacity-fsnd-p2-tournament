@@ -68,12 +68,17 @@ def registerPlayer(name):
   
     Args:
       name: the player's full name (need not be unique).
+
+    Returns:
+      The new player's id.
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO players(name) VALUES(%s)", (name,))
+    c.execute("INSERT INTO players(name) VALUES(%s) RETURNING id", (name,))
+    player_id = c.fetchone()[0]
     conn.commit()
     conn.close()
+    return player_id
 
 
 def playerStandings():
