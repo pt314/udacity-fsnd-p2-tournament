@@ -90,16 +90,20 @@ def testReportMatches():
     [id1, id2, id3, id4] = [row[0] for row in standings]
     reportMatch((id1, 'win'), (id2, 'lose'))
     reportMatch((id3, 'draw'), (id4, 'draw'))
+    result_scores = readScoresConfig()
     standings = playerStandings()
     for (i, n, s, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
-        if i in (id1,) and s != 1.0:
-            raise ValueError("Each match winner should have a score of 1.0.")
-        elif i in (id2,) and s != 0.0:
-            raise ValueError("Each match loser should have a score of 0.0.")
-        elif i in (id3, id4) and s != 0.5:
-            raise ValueError("Each player with a draw should have a score of 0.5.")
+        if i in (id1,) and s != result_scores['win']:
+            raise ValueError("Each match winner should have a score of "
+                + str(result_scores['win']) + ".")
+        elif i in (id2,) and s != result_scores['lose']:
+            raise ValueError("Each match loser should have a score of "
+                + str(result_scores['lose']) + ".")
+        elif i in (id3, id4) and s != result_scores['draw']:
+            raise ValueError("Each player with a draw should have a score of "
+                + str(result_scores['draw']) + ".")
     print "7. After a match, players have updated standings."
 
 

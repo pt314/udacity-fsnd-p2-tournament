@@ -10,6 +10,26 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
 
+def readScoresConfig():
+    """Returns the scores that a player gets for each possible result.
+
+    Returns:
+      A map, with one entry for each possible result, where:
+        key: a possible match result 
+        value: the score given to a player for obtaining that result
+    """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM scores_config")
+    results = c.fetchall()
+    conn.close()
+
+    result_scores = {}
+    for row in results:
+        result_scores[row[0]] = row[1]
+    return result_scores
+
+
 def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
@@ -149,7 +169,7 @@ def playerMatches():
     """Returns a map with all the players that have been matched with each player.
 
     Returns:
-      A map, with one entry for each player
+      A map, with one entry for each player, where:
         key: player's unique id
         value: a list ids of all the players that have played with the player
     """
