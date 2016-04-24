@@ -8,6 +8,8 @@ There are many variations of the system, but basically: players are matched with
 
 The pairing algorithm used in this project is simple: after giving a skipping a player if the number of players is odd, adjacent players are matched in the list of players sorted by score.
 
+Initial [Vagrant](https://www.vagrantup.com/) config cloned from https://github.com/udacity/fullstack-nanodegree-vm
+
 
 Extra features
 --------------
